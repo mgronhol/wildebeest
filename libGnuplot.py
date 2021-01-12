@@ -2,13 +2,18 @@
 import subprocess
 import time
 import sys
+import os
 
-PATH_TO_GNUPLOT_WIN = r"C:\Program Files (x86)\gnuplot\bin\gnuplot.exe"
+PATH_TO_GNUPLOT_WIN = r"C:\Program Files\gnuplot\bin\gnuplot.exe"
+
 PATH_TO_GNUPLOT_LINUX = "gnuplot"
 
 PATH_TO_GNUPLOT = "gnuplot"
 
 if sys.platform == "win32":
+	if not os.path.exists( PATH_TO_GNUPLOT_WIN ):
+		PATH_TO_GNUPLOT_WIN = r"C:\Program Files (x86)\gnuplot\bin\gnuplot.exe"
+
 	PATH_TO_GNUPLOT = PATH_TO_GNUPLOT_WIN
 
 
@@ -17,7 +22,16 @@ class Gnuplot( object ):
 		self.gnuplot = subprocess.Popen( PATH_TO_GNUPLOT, stdin = subprocess.PIPE, universal_newlines = True )
 		
 		self._plotstyle = "linespoints"
-		
+	
+	def __call__( self, content ):
+		self.gnuplot.stdin.write( content + "\n" )
+		self.gnuplot.stdin.flush()
+	
+	def load( self, fname ):
+		self.gnuplot.stdin.write( "load '%s'" % fname + "\n" )
+		self.gnuplot.stdin.flush()
+			
+
 	def xlabel( self, content ):
 		self.gnuplot.stdin.write( 'set xlabel "%s"\n' % content )
 		self.gnuplot.stdin.flush()
