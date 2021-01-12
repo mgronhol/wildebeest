@@ -44,7 +44,7 @@ class Gnuplot( object ):
 			self.gnuplot.stdin.write( "unset grid\n")
 		self.gnuplot.stdin.flush()
 	
-	def style( self, content ):
+	def plotstyle( self, content ):
 		self.plotstyle = content
 	
 	def save_as_png( self, fn ):
@@ -64,8 +64,10 @@ class Gnuplot( object ):
 		
 		parts = []
 		for plt in plots:
-			parts.append( 'plot "-" using 1:2 with %s' % self.plotstyle )
-		
+			if len( parts ) > 0:
+				parts.append( '"-" using 1:2 with %s' % self.plotstyle )
+			else:
+				parts.append( 'plot "-" using 1:2 with %s' % self.plotstyle )
 		self.gnuplot.stdin.write( ",".join(parts) + "\n" )
 		
 		for plt in plots:
