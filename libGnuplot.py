@@ -16,7 +16,7 @@ class Gnuplot( object ):
 	def __init__( self ):
 		self.gnuplot = subprocess.Popen( PATH_TO_GNUPLOT, stdin = subprocess.PIPE, universal_newlines = True )
 		
-		self.plotstyle = "linespoints"
+		self._plotstyle = "linespoints"
 		
 	def xlabel( self, content ):
 		self.gnuplot.stdin.write( 'set xlabel "%s"\n' % content )
@@ -45,7 +45,7 @@ class Gnuplot( object ):
 		self.gnuplot.stdin.flush()
 	
 	def plotstyle( self, content ):
-		self.plotstyle = content
+		self._plotstyle = content
 	
 	def save_as_png( self, fn ):
 		self.gnuplot.stdin.write( "set term png\n" )
@@ -65,9 +65,9 @@ class Gnuplot( object ):
 		parts = []
 		for plt in plots:
 			if len( parts ) > 0:
-				parts.append( '"-" using 1:2 with %s' % self.plotstyle )
+				parts.append( '"-" using 1:2 with %s' % self._plotstyle )
 			else:
-				parts.append( 'plot "-" using 1:2 with %s' % self.plotstyle )
+				parts.append( 'plot "-" using 1:2 with %s' % self._plotstyle )
 		self.gnuplot.stdin.write( ",".join(parts) + "\n" )
 		
 		for plt in plots:
