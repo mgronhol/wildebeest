@@ -24,48 +24,51 @@ class Gnuplot( object ):
 		self._plotstyle = "linespoints"
 	
 	def __call__( self, content ):
+		print(content)
 		self.gnuplot.stdin.write( content + "\n" )
 		self.gnuplot.stdin.flush()
 	
 	def load( self, fname ):
-		self.gnuplot.stdin.write( "load '%s'" % fname + "\n" )
-		self.gnuplot.stdin.flush()
+		self( "load '%s'" % fname)
 			
 
 	def xlabel( self, content ):
-		self.gnuplot.stdin.write( 'set xlabel "%s"\n' % content )
-		self.gnuplot.stdin.flush()
+		self( 'set xlabel "%s"' % content )
 		
 	def ylabel( self, content ):
-		self.gnuplot.stdin.write( 'set ylabel "%s"\n' % content )
-		self.gnuplot.stdin.flush()
-
+		self( 'set ylabel "%s"' % content )
 	def title( self, content ):
-		self.gnuplot.stdin.write( 'set title "%s"\n' % content )
-		self.gnuplot.stdin.flush()
+		self( 'set title "%s"' % content )
 	
 	def key( self, visible ):
 		if visible:
-			self.gnuplot.stdin.write( "set key\n")
+			self( "set key")
 		else:
-			self.gnuplot.stdin.write( "unset key\n")
-		self.gnuplot.stdin.flush()
+			self( "unset key")
 	
 	def grid( self, visible ):
 		if visible:
-			self.gnuplot.stdin.write( "set grid\n")
+			self( "set grid")
 		else:
-			self.gnuplot.stdin.write( "unset grid\n")
-		self.gnuplot.stdin.flush()
+			self( "unset grid")
+
+	def cricle( self, id, x, y, r, colour):
+		self( 'set object %s circle at %s,%s size %s' % ( id, x, y, r))
+
+	def ellipse( self, id, x, y, h, w, angle):
+		self( 'set object %s ellipse center %s,%s size %s,%s angle %s' % (id, x, y, h, w, angle))
+
+	def rectangle(self, id, x0, y0, x1, y1):
+		self( 'set object %s rectangle from %s,%s to %s,%s' % (id, x0, y0, x1, y1))
 	
 	def plotstyle( self, content ):
 		self._plotstyle = content
 	
 	def save_as_png( self, fn ):
-		self.gnuplot.stdin.write( "set term png\n" )
-		self.gnuplot.stdin.write( 'set output "%s"\n' % fn )
-		self.gnuplot.stdin.write( "replot\n" )
-		self.gnuplot.stdin.write( "set term wxt	\n" )
+		self( "set term png" )
+		self( 'set output "%s"' % fn )
+		self( "replot" )
+		self( "set term wxt	" )
 		
 	
 	def plot( self, *args ):
